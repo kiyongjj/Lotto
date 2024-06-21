@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="kr.co.finotek.lotto.mapper.LottoMainMapper">
+
+<select id="selectLottoAllRounds"
+	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
+	resultType="kr.co.finotek.lotto.dto.LottoMainDto">
+		select	a.first_num 
+			, a.second_num 
+			, a.third_num 
+			, a.fourth_num 
+			, a.fifth_num 
+			, a.sixth_num 
+		from 	winning_lotto_numbers a
+		<!--  
+		order by a.draw_date desc
+		 -->
+</select>
+
+<select id="selectLottoNumbers"
+	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
+	resultType="kr.co.finotek.lotto.dto.LottoNumberDto">
+		select	a.round_no 
+			, a.first_num 
+			, a.second_num 
+			, a.third_num 
+			, a.fourth_num 
+			, a.fifth_num 
+			, a.sixth_num 
+			, a.bonus_num  
+			, a.draw_date
+		from 	winning_lotto_numbers a
+		<choose>
+        	<when test='roundNo != null and roundNo != "" '>
+        		where	a.round_no = #{roundNo}
+        	</when>
+        </choose>
+		<!--  
+		where	a.round_no = #{roundNo}
+		 -->
+		order by a.draw_date
+</select>
+
+<select id="selectLottoNumberByRound"
+	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
+	resultType="kr.co.finotek.lotto.dto.LottoNumberDto">
+		select	a.round_no 
+			, a.first_num 
+			, a.second_num 
+			, a.third_num 
+			, a.fourth_num 
+			, a.fifth_num 
+			, a.sixth_num 
+			, a.bonus_num  
+			, a.draw_date
+		from 	winning_lotto_numbers a 
+		where	a.round_no = #{roundNo}
+		order by a.round_no
+</select>
+
+<select id="existLottoNumber"
+	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
+	resultType="Integer">
+		select	count(*) 
+		from 	winning_lotto_numbers a 
+		where	a.first_num = #{firstNum}
+			and a.second_num = #{secondNum}
+			and a.third_num = #{thirdNum}
+			and a.fourth_num = #{fourthNum} 
+			and a.fifth_num = #{fifthNum}
+			and a.sixth_num = #{sixthNum}
+</select>
+
+<select id="probabilityLottoNumber"
+	parameterType="kr.co.finotek.lotto.dto.LottoMainDto"
+	resultType="Integer">
+		select	count(*) 
+		from 	winning_lotto_numbers a 
+		where	a.first_num = #{round}
+			or a.second_num = #{round}
+			or a.third_num = #{round}
+			or a.fourth_num = #{round} 
+			or a.fifth_num = #{round}
+			or a.sixth_num = #{round}
+</select>
+
+<select id="countOfLottoRound"
+	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
+	resultType="Integer">
+		select	count(*)
+		from 	winning_lotto_numbers a
+</select>
+
+<select id="selectLottoRoundNumber"
+	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
+	resultType="kr.co.finotek.lotto.dto.LottoNumberDto">
+		select	a.round_no 
+		from 	winning_lotto_numbers a
+		order by draw_date desc;
+</select>
+
+<insert id="insertLottoNumber"
+	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto">
+		insert into winning_lotto_numbers
+			(
+				round_no,
+				first_num,
+				second_num,
+				third_num,
+				fourth_num,
+				fifth_num,
+				sixth_num,
+				bonus_num,
+				draw_date
+			)
+		values
+			(
+				#{roundNo},
+				#{firstNum},
+				#{secondNum},
+				#{thirdNum},
+				#{fourthNum},
+				#{fifthNum},
+				#{sixthNum},
+				#{bonusNum},
+				#{drawDate}
+			)
+</insert>
+  
+</mapper>

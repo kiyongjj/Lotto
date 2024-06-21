@@ -1,0 +1,53 @@
+daekyo: 
+  bizName: CMM
+  session:
+    enabled: true
+    exclude:
+      server: drs-billing-admin,drs-api,drs-cms
+      referer: /swagger-ui/
+      path: /health/alive,/cmm/v1/sys/msg/update/redis/msg/,/push/v1/device/check/receive,/push/v1/message/,/fil/download/external
+  tscan-url: https://drs-gateway.daekyo.co.kr:8080/cmm/v1/tscan/insert
+  file-url: https://drs-gateway.daekyo.co.kr:8080/fil/
+  
+server:
+  port: 8081
+
+logging:
+  config: classpath:logback-config.xml
+  pattern:
+    console: "%d{HH:mm:ss.SSS} %clr(%-5level) %clr(${spring.application.name}){red} %clr(%logger{32}){cyan}.%clr(%method){yellow}\\(line:%clr(%line){red}\\) %clr(:){red} %msg%n"
+  level:
+    root: info
+    kr:
+      co:
+        finotek: debug
+
+spring:
+  datasource:
+    #driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://180.71.47.199:5432/urero
+    username: urero1k
+    password: finotek000
+  application.name: lotto
+  redis:
+    #url: redis://192.168.10.117:6379
+    host: localhost
+    port: 6379
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp  
+      
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  config-location: classpath:mybatis-config.xml
+  #type-aliases-package: com.daekyo.dreams
+  #configuration:
+    #lazy-loading-enabled: false
+    #aggressive-lazy-loading: false
+    #map-underscore-to-camel-case: true
+    #use-column-label: true
+    #jdbc-type-for-null: 'NULL'
+    #multiple-result-sets-enabled: true
+    #call-setters-on-nulls: true

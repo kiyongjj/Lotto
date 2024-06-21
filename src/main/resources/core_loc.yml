@@ -1,0 +1,6 @@
+daekyo:
+  session:
+    enabled: false
+  tscan-url: https://drs-gatewayd.daekyo.co.kr:8080/cmm/v1/tscan/insert
+  file-url: https://drs-gatewayl.daekyo.co.kr:18080/fil/
+  test.ids: 32098501,22006619,21051480,22000873,10000236,21012416,22002066,21092139,32014546,32010977,32083038,22002257,8200427

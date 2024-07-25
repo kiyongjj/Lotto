@@ -34,41 +34,27 @@ public class LottoMainService {
     private LottoMainMapper lottoMainMapper;
     
 	public List<LottoNumberDto> choice(int count) {
-
+		
 		List<LottoNumberDto> result = new ArrayList<>();
 		
 		if(count > 0) {
-//			for(int i = 0 ; i < count ; i++) {
+			for(int i = 0 ; i < count ; i++) {
 				boolean rtn = true;
 
 				LottoNumberDto lnd = new LottoNumberDto();
-//				List<Integer> results = selectNumber();
-				List<Integer> results = new ArrayList<>();
-				results.add(6);
-				results.add(14);
-				results.add(30);
-				results.add(31);
-				results.add(40);
-				results.add(41);
+				List<Integer> results = selectNumber();
 				rtn = checkLottoNumber(results);
 				
 				if(rtn) {
 					count += 1;
 					System.out.println("results :: " + results + ", rtn :: " + rtn + " , count :: " + count);
-				} /*else {
-					System.out.println("results :: " + results);
+				} else {
 					lnd = convertLotto(results);
 					lnd.setRoundNo((i + 1) + "회");
 					result.add(lnd);
-				}*/
-//				if(!rtn) {
-//					lnd = convertLotto(results);
-//					lnd.setRoundNo((i + 1) + "회");
-//					result.add(lnd);
-//				}
-//				System.out.println("count :: " + count);
+				}
 			}
-//		}
+		}
     	return result;
 	}
 	
@@ -83,7 +69,17 @@ public class LottoMainService {
 				.collect(Collectors.toList());
 
     	for(int j = 0 ; j < 6 ; j++) {
-    		int rdNum = (int)((rand.nextDouble()+ 1) *10000);
+//    		rand.setSeed(System.currentTimeMillis() * rand.nextInt());
+    		rand.setSeed(System.currentTimeMillis());
+    		
+    		try {
+    			Thread.sleep(1000);
+    		} catch (InterruptedException e) {
+    			e.printStackTrace();
+    		}
+    			
+    		int rdNum = (rand.nextInt(10000)+ 1);
+    		System.out.println("rdNum ::: " + rdNum);
     		boolean rtn = true;
     		
 	    	while(rtn) {
@@ -110,6 +106,7 @@ public class LottoMainService {
     public boolean checkLottoNumber(List<Integer> lottoNumber) {
     	
     	boolean rtn = false;
+    	System.out.println("lottoNumber :: " + lottoNumber);
     	
     	for(int i = 0 ; i < cachedLottoNumbers.size() ; i++) {
 			List<Integer> tmpList = new ArrayList<>();
@@ -121,7 +118,7 @@ public class LottoMainService {
 			tmpList.add(cachedLottoNumbers.get(i).getSixthNum());
 
 			rtn = lottoNumber.containsAll(tmpList);
-			System.out.println("tmpList :: " + tmpList + ", rtn :: " + rtn);
+//			System.out.println("tmpList :: " + tmpList + ", rtn :: " + rtn);
 			if(rtn) {
 				System.out.println("tmpList :: " + tmpList + ", rtn :: " + rtn + " , count :: " + i);
 				break;
@@ -145,20 +142,23 @@ public class LottoMainService {
     	return lnd;
 	}
 	
-	public void cachedLottoNumbers() {
-		cachedLottoNumbers = lottoMainMapper.selectLottoAllRounds();
-		for(int i = 0 ; i < cachedLottoNumbers.size() ; i++) {
-			System.out.println(i + "  cachedLottoNumbers :: " + cachedLottoNumbers.get(i));
-		}
-	}
-	
-	public List<LottoNumberDto> cachedLottoNumbers2() {
+	public List<Integer> testLottoNumber() {
 
-		List<LottoNumberDto> cachedLottoNumbers = new ArrayList<LottoNumberDto>();
+		List<Integer> result = null;
+		int count = 0;
+		boolean rtn = true;
 		
-		cachedLottoNumbers = lottoMainMapper.selectLottoNumbers();
+		do {
+			result = selectNumber();
+			rtn = checkLottoNumber(result);
+			count++;
+			if(rtn) {
+				System.out.println("result :: " + result + ", rtn :: " + rtn + " , count :: " + count);
+				return result;
+			}
+		} while(!rtn);
 		
-		return cachedLottoNumbers;
+		return result;
 	}
 	
 	/**
@@ -171,9 +171,12 @@ public class LottoMainService {
 //    	return lottoMainMapper.existLottoNumber(lottoNumberDto) > 0;
 //    }
     
-    public List<LottoNumberDto> selectLottoRoundNumber() {
+    public List<LottoNumberDto> selectLottoRoundNumber(LottoNumberDto lottoNumberDto) {
         
-    	return lottoMainMapper.selectLottoRoundNumber();
+    	// 로또 번호 캐싱
+		cachedLottoNumbers = lottoMainMapper.selectLottoAllRounds();
+		
+    	return lottoMainMapper.selectLottoRoundNumber(lottoNumberDto);
     }
     
     public List<LottoNumberDto> selectLottoNumbers() {
@@ -200,42 +203,32 @@ public class LottoMainService {
     
     
     
+
     
-    
 
-	public List<Integer> choice2() {
-
-		List<Integer> result = new ArrayList<>();
-		
-		boolean rtn = false;
-		int count = 0;
-		System.out.println("START");
-		
-//		while(!rtn) {
-			count++;
-			result  = selectNumber();
-			rtn = checkLottoNumber(result);
-//			for(int i = 0 ; i < cachedLottoNumbers.size() ; i++) {
-//				List<Integer> tmpList = new ArrayList<>();
-//				tmpList.add(cachedLottoNumbers.get(i).getFirstNum());
-//				tmpList.add(cachedLottoNumbers.get(i).getSecondNum());
-//				tmpList.add(cachedLottoNumbers.get(i).getThirdNum());
-//				tmpList.add(cachedLottoNumbers.get(i).getFourthNum());
-//				tmpList.add(cachedLottoNumbers.get(i).getFifthNum());
-//				tmpList.add(cachedLottoNumbers.get(i).getSixthNum());
-//				rtn = result.containsAll(tmpList);
-//				if(count%1000 == 0) {
-//					System.out.println("count :: " + count);
-//				}
-//				if(rtn) {
-//					System.out.println(result + " , " + rtn + " , count :: " + count);
-//					break;
-//				}
-//			}
-//		}
-
-		return result;
-	}
+	/*
+	 * public List<Integer> choice2() {
+	 * 
+	 * List<Integer> result = new ArrayList<>();
+	 * 
+	 * boolean rtn = false; int count = 0; System.out.println("START");
+	 * 
+	 * while(!rtn) { count++; result = selectNumber(); rtn =
+	 * checkLottoNumber(result); for(int i = 0 ; i < cachedLottoNumbers.size() ;
+	 * i++) { List<Integer> tmpList = new ArrayList<>();
+	 * tmpList.add(cachedLottoNumbers.get(i).getFirstNum());
+	 * tmpList.add(cachedLottoNumbers.get(i).getSecondNum());
+	 * tmpList.add(cachedLottoNumbers.get(i).getThirdNum());
+	 * tmpList.add(cachedLottoNumbers.get(i).getFourthNum());
+	 * tmpList.add(cachedLottoNumbers.get(i).getFifthNum());
+	 * tmpList.add(cachedLottoNumbers.get(i).getSixthNum()); rtn =
+	 * result.containsAll(tmpList); if(count%1000 == 0) {
+	 * System.out.println("count :: " + count); } if(rtn) {
+	 * System.out.println(result + " , " + rtn + " , count :: " + count); break; } }
+	 * }
+	 * 
+	 * return result; }
+	 */
 	
 
 

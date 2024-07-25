@@ -18,7 +18,7 @@ public interface LottoMainMapper {
 
 	int existLottoNumber(LottoNumberDto lottoNumberDto);
 
-	List<LottoNumberDto> selectLottoRoundNumber();
+	List<LottoNumberDto> selectLottoRoundNumber(LottoNumberDto lottoNumberDto);
 
 	int probabilityLottoNumber(LottoMainDto lottoMainDto);
 	

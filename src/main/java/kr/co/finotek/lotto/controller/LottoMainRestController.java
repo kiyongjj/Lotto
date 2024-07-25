@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import kr.co.finotek.core.api.DrsResponseEntity;
 import kr.co.finotek.core.service.ResponseService;
-import kr.co.finotek.lotto.dto.LottoMainDto;
 import kr.co.finotek.lotto.dto.LottoNumberDto;
 import kr.co.finotek.lotto.service.LottoMainService;
 import lombok.RequiredArgsConstructor;
@@ -23,31 +22,20 @@ public class LottoMainRestController {
 	
 	private final ResponseService responseService;
 	private final LottoMainService lottoMainService;
-	private List<LottoNumberDto> cachedLottoNumbers;
 	
 	@PostMapping("/selectLottoRoundNumber")
 	public DrsResponseEntity<Object> selectLottoRoundNumber(@RequestBody LottoNumberDto lottoNumberDto) {
 		
-		List<LottoNumberDto> result = lottoMainService.selectLottoRoundNumber();
-//		List<LottoNumberDto> result2 = lottoMainService.selectLottoNumbers();
-		lottoMainService.cachedLottoNumbers();
-		cachedLottoNumbers = lottoMainService.cachedLottoNumbers2();
+		List<LottoNumberDto> result = lottoMainService.selectLottoRoundNumber(lottoNumberDto);
 		
 		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
-	}
-	
-	public void printCachedLottoNumbers() {
-		for(int i = 0 ; i < cachedLottoNumbers.size() ; i++) {
-			System.out.println("cachedLottoNumbers :: " + cachedLottoNumbers.get(i));
-		}
 	}
 	
 	@PostMapping("/buyingLottoTicket/{cost}")
 	public DrsResponseEntity<Object> buyingLottoTicket(@PathVariable int cost) {
 		
 		List<LottoNumberDto> result;
-//		printCachedLottoNumbers();
-		
+
 		result = lottoMainService.choice(cost);
 		
 		if(ObjectUtils.isNotEmpty(result)) {
@@ -77,7 +65,7 @@ public class LottoMainRestController {
 		
 		List<Integer> result;
 		
-		result = lottoMainService.choice2();
+		result = lottoMainService.testLottoNumber();
 		
 		if(result.isEmpty()) {
 			System.out.println("데이터가 없습니다.");
@@ -93,7 +81,7 @@ public class LottoMainRestController {
 		
 		boolean result = lottoMainService.insertLottoNumber(lottoNumberDto);
 		
-		return responseService.toResponseEntity("조회가 완료되었습니다.", null);
+		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
 	}
 	
 //	@PostMapping("/insertLottoNumbers")

@@ -1,5 +1,6 @@
 package kr.co.finotek.lotto.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -15,8 +16,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class LottoNumberDto {
+public class LottoNumberDto implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String roundNo;
 	private int firstNum;
 	private int secondNum;
@@ -26,4 +31,9 @@ public class LottoNumberDto {
 	private int sixthNum;
 	private int bonusNum;
 	private LocalDate drawDate;
+	
+	@Builder.Default
+	private int currentPage = 1;
+	@Builder.Default
+	private int pageSize = 10;
 }

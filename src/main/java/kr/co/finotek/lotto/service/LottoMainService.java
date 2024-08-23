@@ -24,8 +24,11 @@ import lombok.AllArgsConstructor;
 public class LottoMainService {
 
 	private static final int START_LOTTO_NUMBER = 1;
+	private static final int LOTTO_NUMBER_COUNT = 6;
     private static final int END_LOTTO_NUMBER = 45;
     private List<LottoMainDto> cachedLottoNumbers = new ArrayList<>();
+    private List<Double> probability = new ArrayList<>();
+	
 
     private static final BigDecimal LOTTO_PRICE = BigDecimal.valueOf(1000);
 
@@ -33,8 +36,32 @@ public class LottoMainService {
 	
     private LottoMainMapper lottoMainMapper;
     
-	public List<LottoNumberDto> choice(int count) {
+    public void initProcesses() {
+    	// 로또 번호 캐싱
+		cachedLottoNumbers = selectLottoAllRounds();
+		probability = getProbility(cachedLottoNumbers);
 		
+		/*
+    	List<Integer> result = new ArrayList<Integer>();
+    	List<Integer> lottoNumberCollections = new ArrayList<Integer>();
+    	
+		for(int i = 0 ; i < 10 ; i++) {
+		lottoNumberCollections = collectNumbers();
+		
+		// 재귀 함수 호출 테스트용으로 만든 코드.
+		//int num = selectRandomNumberBasedOnProbability(probability, 0, random.nextDouble());
+		
+		System.out.println("num : " + num);
+		System.out.println(lottoNumberCollections.size() + ", initProcesses lottoNumberCollections -1- : " + lottoNumberCollections);
+		result = selectNumbers(lottoNumberCollections);
+		System.out.println("result -2- : " + result.size());
+		System.out.println(lottoNumberCollections.size() + ", initProcesses lottoNumberCollections -2- : " + lottoNumberCollections);
+		}
+		*/
+    }
+
+	public List<LottoNumberDto> choice(int count) {
+
 		List<LottoNumberDto> result = new ArrayList<>();
 		
 		if(count > 0) {
@@ -42,7 +69,10 @@ public class LottoMainService {
 				boolean rtn = true;
 
 				LottoNumberDto lnd = new LottoNumberDto();
-				List<Integer> results = selectNumber();
+				
+				List<Integer> lottoNumberCollections = collectNumbers();
+				List<Integer> results = selectNumbers(lottoNumberCollections);
+				
 				rtn = checkLottoNumber(results);
 				
 				if(rtn) {
@@ -58,55 +88,71 @@ public class LottoMainService {
     	return result;
 	}
 	
-	public List<Integer> selectNumber() {
+	/**
+	 * 로또 번호 6개 추출하는 함수
+	 * probabilityBasedSelection() 함수를 6번 호출할 예정
+	 * 리턴된 로또번호를 리스트에 답아서 리스트 리턴함 
+	 * @param lottoNumberCollections
+	 * @return
+	 */
+	public List<Integer> selectNumbers(List<Integer> lottoNumberCollections) {
 		
 		List<Integer> result = new ArrayList<Integer>();
-		Random rand = new Random();
 
+		Random random = new Random();
+		
+		for(int i = 0 ; i < LOTTO_NUMBER_COUNT ; i++) {
+			
+			Collections.shuffle(lottoNumberCollections);
+
+			double rand = random.nextDouble(); // 0부터 1 사이의 랜덤한 double 값 생성
+			double cumulativeProbability = 0.0;
+			
+			
+			for(int j = 0 ; j < lottoNumberCollections.size() ; j++) {
+				cumulativeProbability += probability.get(lottoNumberCollections.get(j) - 1);
+				if(lottoNumberCollections.size() > 39 && rand >= cumulativeProbability) {
+					j = 0;
+				}
+				
+				if (rand < cumulativeProbability) {
+					result.add(lottoNumberCollections.get(j));
+					lottoNumberCollections.remove(j);
+					break;
+				}
+				Collections.shuffle(lottoNumberCollections);
+			}
+		}
+		Collections.sort(result);
+		//System.out.println("result : " + result);
+
+		return result;
+	}
+	
+	/**
+	 * 로또 번호 collection 형식으로 구하는 로직
+	 * @return
+	 */
+	public List<Integer> collectNumbers() {
+		
 		@SuppressWarnings("removal")
 		List<Integer> lottoNumberCollections = IntStream.rangeClosed(START_LOTTO_NUMBER, END_LOTTO_NUMBER)
 				.mapToObj(Integer::new)				//람다 code :: .mapToObj(x -> new Integer(x))
 				.collect(Collectors.toList());
-
-    	for(int j = 0 ; j < 6 ; j++) {
-//    		rand.setSeed(System.currentTimeMillis() * rand.nextInt());
-    		rand.setSeed(System.currentTimeMillis());
-    		
-    		try {
-    			Thread.sleep(1000);
-    		} catch (InterruptedException e) {
-    			e.printStackTrace();
-    		}
-    			
-    		int rdNum = (rand.nextInt(10000)+ 1);
-    		System.out.println("rdNum ::: " + rdNum);
-    		boolean rtn = true;
-    		
-	    	while(rtn) {
-		    	for(int i = 0 ; i < lottoNumberCollections.size() ; i++) {
-		        	Collections.shuffle(lottoNumberCollections);
-		        	
-		    		if(rdNum >= lottoNumberCollections.get(i)) {
-			    		rdNum -= lottoNumberCollections.get(i);
-		    		}
-		    		else {
-		    			result.add(lottoNumberCollections.get(i));
-		    			lottoNumberCollections.remove(i);
-		    			rtn = false;
-		    			break;
-		    		}
-		    	}
-	    	}
-    	}
-    	Collections.sort(result);
-//    	System.out.println("result :: " + result);
-		return result;
+		
+		Collections.sort(lottoNumberCollections);
+		
+		return lottoNumberCollections;
 	}
 	
+	/**
+	 * 추첨한 로또번호와 기 당첨번호 비교
+	 * @param lottoNumber
+	 * @return
+	 */
     public boolean checkLottoNumber(List<Integer> lottoNumber) {
     	
     	boolean rtn = false;
-    	System.out.println("lottoNumber :: " + lottoNumber);
     	
     	for(int i = 0 ; i < cachedLottoNumbers.size() ; i++) {
 			List<Integer> tmpList = new ArrayList<>();
@@ -118,7 +164,7 @@ public class LottoMainService {
 			tmpList.add(cachedLottoNumbers.get(i).getSixthNum());
 
 			rtn = lottoNumber.containsAll(tmpList);
-//			System.out.println("tmpList :: " + tmpList + ", rtn :: " + rtn);
+
 			if(rtn) {
 				System.out.println("tmpList :: " + tmpList + ", rtn :: " + rtn + " , count :: " + i);
 				break;
@@ -127,7 +173,11 @@ public class LottoMainService {
     	
     	return rtn;
     }
-	
+	/**
+	 * List 형식을 LottoNumberDto 형식으로 매칭
+	 * @param results
+	 * @return
+	 */
 	public LottoNumberDto convertLotto(List<Integer> results) {
 		
 		LottoNumberDto lnd = new LottoNumberDto();
@@ -141,15 +191,44 @@ public class LottoMainService {
     	
     	return lnd;
 	}
+
+	/**
+	 * Lotto 당첨번호 누적 확률 계산
+	 * @param cachedLottoNumbers
+	 * @return
+	 */
+    public List<Double> getProbility(List<LottoMainDto> cachedLottoNumbers) {
+    	
+    	int[] count = new int[45]; // 각 숫자의 선택 횟수를 저장할 배열
+    	int totalIterations  = cachedLottoNumbers.size() * 6;
+    	List<Double> tmpProbability = new ArrayList<>(); // 각 숫자의 확률을 저장할 배열
+    	
+    	for(int i = 0 ; i < cachedLottoNumbers.size() ; i++) {
+    		
+			count[cachedLottoNumbers.get(i).getFirstNum() - 1]++;
+			count[cachedLottoNumbers.get(i).getSecondNum() - 1]++;
+			count[cachedLottoNumbers.get(i).getThirdNum() - 1]++;
+			count[cachedLottoNumbers.get(i).getFourthNum() - 1]++;
+			count[cachedLottoNumbers.get(i).getFifthNum() - 1]++;
+			count[cachedLottoNumbers.get(i).getSixthNum() - 1]++;
+    	}
+    	
+    	for(int j = 0 ; j < count.length ; j++) {
+    		tmpProbability.add((double)count[j] / totalIterations);
+    	}
+    	return tmpProbability;
+    }
 	
 	public List<Integer> testLottoNumber() {
 
-		List<Integer> result = null;
+		List<Integer> result = new ArrayList<>();
 		int count = 0;
 		boolean rtn = true;
 		
 		do {
-			result = selectNumber();
+			List<Integer> lottoNumberCollections = collectNumbers();
+			result = selectNumbers(lottoNumberCollections);
+			
 			rtn = checkLottoNumber(result);
 			count++;
 			if(rtn) {
@@ -173,15 +252,17 @@ public class LottoMainService {
     
     public List<LottoNumberDto> selectLottoRoundNumber(LottoNumberDto lottoNumberDto) {
         
-    	// 로또 번호 캐싱
-		cachedLottoNumbers = lottoMainMapper.selectLottoAllRounds();
-		
     	return lottoMainMapper.selectLottoRoundNumber(lottoNumberDto);
     }
-    
+
     public List<LottoNumberDto> selectLottoNumbers() {
         
     	return lottoMainMapper.selectLottoNumbers();
+    }
+    
+    public List<LottoMainDto> selectLottoAllRounds() {
+        
+    	return lottoMainMapper.selectLottoAllRounds();
     }
     
     public List<LottoNumberDto> selectLottoNumberByRound(String roundNo) {
@@ -205,35 +286,6 @@ public class LottoMainService {
     
 
     
-
-	/*
-	 * public List<Integer> choice2() {
-	 * 
-	 * List<Integer> result = new ArrayList<>();
-	 * 
-	 * boolean rtn = false; int count = 0; System.out.println("START");
-	 * 
-	 * while(!rtn) { count++; result = selectNumber(); rtn =
-	 * checkLottoNumber(result); for(int i = 0 ; i < cachedLottoNumbers.size() ;
-	 * i++) { List<Integer> tmpList = new ArrayList<>();
-	 * tmpList.add(cachedLottoNumbers.get(i).getFirstNum());
-	 * tmpList.add(cachedLottoNumbers.get(i).getSecondNum());
-	 * tmpList.add(cachedLottoNumbers.get(i).getThirdNum());
-	 * tmpList.add(cachedLottoNumbers.get(i).getFourthNum());
-	 * tmpList.add(cachedLottoNumbers.get(i).getFifthNum());
-	 * tmpList.add(cachedLottoNumbers.get(i).getSixthNum()); rtn =
-	 * result.containsAll(tmpList); if(count%1000 == 0) {
-	 * System.out.println("count :: " + count); } if(rtn) {
-	 * System.out.println(result + " , " + rtn + " , count :: " + count); break; } }
-	 * }
-	 * 
-	 * return result; }
-	 */
-	
-
-
-
-	
     public int getNumberOfLottoByMoneyPaid(BigDecimal lottoMoney) {
     	
         return lottoMoney.divide(LOTTO_PRICE, RoundingMode.DOWN).intValue();
@@ -241,20 +293,24 @@ public class LottoMainService {
     
 
     
-    public List<LottoMainDto> selectLottoAllRounds() {
-        
-    	return lottoMainMapper.selectLottoAllRounds();
+
+    
+
+    
+	public int countOfLottoRound() {
+	    
+		return lottoMainMapper.countOfLottoRound();
+	}
+
+	/** 재귀 함수를 사용하여 확률 배열을 기반으로 새로운 랜덤 숫자 선택하는 메서드
+	public int selectRandomNumberBasedOnProbability(List<Double> probability, int index, double rand) {
+        if (rand < probability.get(index)) {
+        	System.out.println(index);
+            return index + 1; // 선택된 숫자 반환 (1부터 시작하므로 index + 1)
+        } else {
+            return selectRandomNumberBasedOnProbability(probability, index + 1, rand - probability.get(index));
+        }
     }
+    */
     
-
-    
-    public int countOfLottoRound() {
-        
-    	return lottoMainMapper.countOfLottoRound();
-    }
-    
-
-    
-
-
 }

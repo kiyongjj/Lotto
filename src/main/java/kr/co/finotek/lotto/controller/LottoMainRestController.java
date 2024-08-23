@@ -26,6 +26,8 @@ public class LottoMainRestController {
 	@PostMapping("/selectLottoRoundNumber")
 	public DrsResponseEntity<Object> selectLottoRoundNumber(@RequestBody LottoNumberDto lottoNumberDto) {
 		
+		lottoMainService.initProcesses();
+		
 		List<LottoNumberDto> result = lottoMainService.selectLottoRoundNumber(lottoNumberDto);
 		
 		return responseService.toResponseEntity("조회가 완료되었습니다.", result);

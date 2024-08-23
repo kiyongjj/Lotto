@@ -5,7 +5,7 @@
 		<title>Lotto</title>
 	</head>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-	<link rel="stylesheet" href="./mainCss.css">
+	
 
 	<script>
 	$(document).ready(function() {
@@ -75,8 +75,7 @@
 				url:localStorage.getItem("bbsContext") + "/lotto/testLottoNumber",
 				success:function(data) {
 					
-					console.log(data.body[0]);
-					initializeDynamicTable(data.body);
+					console.log(data);
 					
 				},
 				error:function(data,sataus,err) {
@@ -165,6 +164,7 @@
 		$('#roundNumber').append('<option value="" selected disabled>선택해 주세요.</option>');
 		
 		for(let i = 0 ; i < data.body.length ; i++) {
+		//for(let i = 0 ; i < 15 ; i++) {
 			if(i == 0) {
 				$( '#roundNumber' ).append( '<option selected="selected" value="' + data.body[i].roundNo + '">' + data.body[i].roundNo + '</option>' );
 			} else {
@@ -212,7 +212,7 @@
 		
 		var html = null;
 		const cost = $('#buyingCost').val();
-		console.log(cost);
+		//console.log(cost);
 		$.ajax({
 			type:'post',
 			dataType: "json",
@@ -222,10 +222,10 @@
 			url:localStorage.getItem("bbsContext") + "/lotto/buyingLottoTicket/" + cost,
 			success:function(data) {
 				
-				console.log(data);
+				//console.log(data);
 				
 				if(data.body !== null) {
-					initializeDynamicTable(data.body);
+					initializeDynamicTable(data.body, "B");
 				} else {
 					console.log("data is null");
 				}
@@ -237,37 +237,46 @@
 		});
 		
 	}
-	
 	// 테이블을 동적으로 생성하는 함수
-	function initializeDynamicTable(data) {
+	function initializeDynamicTable(data, rtn) {
+		console.log(rtn);
 		
 		deleteDynamicTable();
-		// 테이블을 생성
-		const table = document.createElement("table");
-		table.border = "1";
+		// thead 데이터 배열
+		let headers = null;
+		if(rtn == "B" || rtn == "T") {
+			headers = ["roundNo", "firstNum", "secondNum", "thirdNum", "fourthNum", "fifthNum", "sixthNum"];
+		} else {
+			headers = ["roundNo", "firstNum", "secondNum", "thirdNum", "fourthNum", "fifthNum", "sixthNum", "bonusNum", "drawDate"];
+		}
 		
 		console.log(data);
-		// 테이블 헤더를 생성하고 추가
+		// 테이블 요소 생성
+		const table = document.createElement('table');
+		table.classList.add('data-table');
+		
+		// 테이블 헤드 생성
 		const thead = table.createTHead();
 		const headerRow = thead.insertRow();
-		for (const key in data[0]) {
-			const th = document.createElement("th");
-			th.textContent = key;
+		headers.forEach(headerText => {
+			const th = document.createElement('th');
+			th.textContent = headerText;
 			headerRow.appendChild(th);
-		}
-	
-		// 테이블 본문을 생성하고 데이터를 추가
+		});
+	    
+		// 테이블 바디 생성
 		const tbody = table.createTBody();
 		data.forEach(item => {
 			const row = tbody.insertRow();
-			for (const key in item) {
+		    headers.forEach(header => {
 				const cell = row.insertCell();
-				cell.textContent = item[key];
-			}
+				cell.textContent = item[header];
+			});
 		});
-	
-		// 생성된 테이블을 HTML 문서에 추가
-		document.getElementById("lotto-container").appendChild(table);
+		
+		// 테이블을 생성하고 HTML 요소에 추가
+		const tableContainer = document.getElementById('lotto-container');
+		tableContainer.appendChild(table);
 	}
 	
 	// 테이블을 삭제하는 함수
@@ -310,7 +319,10 @@
 		</div>
 		
 		<!-- 테이블을 표시할 위치 -->
-		<div id="lotto-container"></div>
+		<div id="lotto-container">
+		</div>
+		
+		<div id="table-container"></div>
 		
 	</body>
 	<style>

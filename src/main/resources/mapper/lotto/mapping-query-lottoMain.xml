@@ -98,8 +98,10 @@
 		select	a.round_no 
 		from 	winning_lotto_numbers a
 		order by draw_date desc
+		<!-- 
 		limit #{pageSize}
 		offset (#{currentPage} - 1) * #{pageSize};
+		 -->
 </select>
 
 <insert id="insertLottoNumber"

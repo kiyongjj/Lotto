@@ -83,6 +83,7 @@ public class LottoMainService {
 					lnd.setRoundNo((i + 1) + "회");
 					result.add(lnd);
 				}
+				System.out.println(results);
 			}
 		}
     	return result;

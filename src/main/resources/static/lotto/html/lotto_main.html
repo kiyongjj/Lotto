@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+		<title>Lotto</title>
+	</head>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+	<script src="http://localhost:8081/lotto/js/lotto_main.js"></script>
+	<link rel="stylesheet" href="http://localhost:8081/lotto/css/lotto_main.css">
+
+	<body>
+		<nav id='topMenu'>
+			<ul>
+				<li><a class="menuLink" href="#">당첨번호 조회</a></li>
+				<li><a class="menuLink" href="./board_reg.html">게시판</a></li>
+				<li><a class="menuLink" href="#">로또 구매</a></li>
+			</ul>
+		</nav>
+		<div>
+			<h1>LOTTO</h1>
+			<div>
+				<select id='roundNumber' onchange='chageRoundNumber()'>
+				</select>
+				<button type='button' id='selectLottoNumber'>당첨번호 조회</button>
+				<button type='button' id='testLottoNumber'>당첨번호 테스트</button>
+			</div>
+			<div>
+				<input type='number' id='roundNo' style='width:50px'/>
+				<input type='text' id='lottoNumbers' style='width:164px;'/>
+				<input type='date' id='drawDate'/>
+				<button type='button' id='insertLottoNumber'>로또 입력</button>
+			</div>
+			<div>
+				<input type='number' id='buyingCost' style='width:100px;' step='1000'></input>
+				<button type='button' id='buyingLottoTicket' onclick='buyingLottoTicket()'>구매</button>
+			</div>
+		</div>
+		
+		<!-- 테이블을 표시할 위치 -->
+		<div id="lotto-container">
+		</div>
+		
+	</body>
+</html>

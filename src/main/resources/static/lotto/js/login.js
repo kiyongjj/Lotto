@@ -21,14 +21,14 @@ function login() {
 	let param = {};
 	param.id = $('#id').val();
 	param.password = $('#password').val();
-	//console.log("submit", param);
+	console.log("submit", param);
 	
 	$.ajax({
 		type:'post',
 		dataType: "json",
 		contentType: 'application/json',
 		data: JSON.stringify(param),
-		url:localStorage.getItem("bbsContext") + "/lotto/login",
+		url:localStorage.getItem("bbsContext") + "/member/login",
 		success:function(data) {
 			
 			console.log(data);

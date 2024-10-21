@@ -115,3 +115,14 @@ h2 {
   font-size: 1.2em;
   letter-spacing: 2px;
 }
+
+.submit div {
+	text-align: center;
+}
+
+.userInfo {
+	display: flex;
+	justify-content: center;
+	width: 80%;
+	height: 600px;
+}

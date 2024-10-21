@@ -21,26 +21,6 @@ public class LoginController {
 	public DrsResponseEntity<Object> selectLottoRoundNumber(@RequestBody LoginDto loginDto) {
 		
 		boolean rtn = false;
-		System.out.println(loginDto.getId());
-		System.out.println(loginDto.getPassword());
-		
-		if(loginDto.getId().equals("admin")) {
-			System.out.println("id is admin!");
-			rtn = true;
-		} else {
-			System.out.println("ID is Different!");
-			rtn =false;
-			return responseService.toResponseEntity("아이디가 다릅니다.", rtn);
-		}
-		
-		if(loginDto.getPassword().equals("123")) {
-			System.out.println("password is OK!");
-			rtn = true;
-		} else {
-			System.out.println("password is Different!");
-			rtn =false;
-			return responseService.toResponseEntity("비밀번호가 다릅니다.", rtn);
-		}
 		
 		return responseService.toResponseEntity("로그인이 완료되었습니다.", rtn);
 	}

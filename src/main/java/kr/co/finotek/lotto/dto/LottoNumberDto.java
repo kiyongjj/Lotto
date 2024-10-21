@@ -16,19 +16,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class LottoNumberDto implements Serializable {
+public class LottoNumberDto extends LottoMainDto implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private String roundNo;
-	private int firstNum;
-	private int secondNum;
-	private int thirdNum;
-	private int fourthNum;
-	private int fifthNum;
-	private int sixthNum;
 	private int bonusNum;
 	private LocalDate drawDate;
 	

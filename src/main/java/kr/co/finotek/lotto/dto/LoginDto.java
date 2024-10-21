@@ -15,7 +15,9 @@ import lombok.ToString;
 @ToString
 public class LoginDto {
 
-	private String id;
+	private Long member_id;
+	private String name;
 	private String password;
-	private Boolean rtn;
+	private String email;
+	private String contact;
 }

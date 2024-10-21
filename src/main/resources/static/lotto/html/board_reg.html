@@ -70,26 +70,34 @@
 			$('#formReg').click(function() {
 
 				let param = {};
+				let member = {};
 				
+				member.id = 33;
+				member.name = "이기용";
+				param.member = member;
 				param.title = $('#title').val();
 				param.content = $('#content').val();
-				
-				console.log(param);
+
 				$.ajax({
 					type:'post',
 					dataType: "json",
 					contentType: 'application/json',
 					data: JSON.stringify(param),
-					url:localStorage.getItem("bbsContext") + "/lotto/registContents",
+					url:localStorage.getItem("bbsContext") + "/board/create",
 					success:function(data) {
 						
-						console.log(data);
+						document.location.href = "./board_list.html";
 						
 					},
 					error:function(data,sataus,err) {
 						alert("데이터 요청에 실패하였습니다.\r status : " + status);
 					}
 				});
+				
+			});
+			
+			$('#formList').click(function() {
+				document.location.href = "./board_list.html";
 			});
 		});
 	</script>

@@ -23,12 +23,12 @@ logging:
         finotek: debug
 
 spring:
-  datasource:
-    #driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://180.71.47.199:5432/urero
-    username: urero1k
-    password: finotek000
+#  datasource:
+#    #driverClassName: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+#    driverClassName: org.postgresql.Driver
+#    url: jdbc:postgresql://180.71.47.199:5432/urero
+#    username: urero1k
+#    password: finotek000
   application.name: lotto
   redis:
     #url: redis://192.168.10.117:6379
@@ -38,7 +38,19 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp  
-      
+  # h2 Setting Info(H2 Console에 접속하기 위한 설정정보 입력)
+  h2:
+    console:
+      enabled: true # H2 Console을 사용할지 여부(H2 Console은 H2 Database를 UI로 제공해주는 기능)
+      path: /h2-console  # H2 Console의 Path
+  # Database Setting Info (Database를 H2로 사용하기 위해 H2연결 정보 입력)
+  datasource:
+    generate-unique-name: false # 임의명칭 생성 여부
+    driver-class-name: org.h2.Driver  # Database를 H2로 사용하겠다.
+    url: jdbc:h2:~/test  # H2 접속 정보
+    username: sa  # H2 접속 시 입력할 username 정보 (원하는 것으로 입력)
+    password:  # H2 접속 시 입력할 password 정보 (원하는 것으로 입력)
+
 mybatis:
   mapper-locations: classpath:mapper/**/*.xml
   config-location: classpath:mybatis-config.xml

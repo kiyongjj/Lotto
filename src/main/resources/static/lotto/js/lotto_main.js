@@ -12,22 +12,7 @@ $(function() {
 	param.currentPage = 1;
 	
 	selectRoundNumbers(param);
-	/*
-	$.ajax({
-		type:'post',
-		dataType: "json",
-		contentType: 'application/json',
-		data: JSON.stringify(param),
-		url:localStorage.getItem("bbsContext") + "/lotto/selectLottoRoundNumber",
-		success:function(data) {
-			console.log(data);
-			makeOptionsOfRoundNumbers(data);
-		},
-		error:function(data,sataus,err) {
-			alert("데이터 요청에 실패하였습니다.\r status : " + status);
-		}
-	});
-	*/
+
 	// 로또 당첨번호 DB검색
 	$('#selectLottoNumber').click(function() {
 		console.log("selectLottoNumber");
@@ -45,8 +30,8 @@ $(function() {
 			url:localStorage.getItem("bbsContext") + "/lotto/selectLottoNumber",
 			success:function(data) {
 				
-				console.log(data.body[0]);
-				initializeDynamicTable(data.body);
+				console.log(data);
+				initializeDynamicTable(data);
 				
 			},
 			error:function(data,sataus,err) {
@@ -65,7 +50,7 @@ $(function() {
 			type:'post',
 			dataType: "json",
 			contentType: 'application/json',
-			data: JSON.stringify(param),
+			//data: JSON.stringify(param),
 			url:localStorage.getItem("bbsContext") + "/lotto/testLottoNumber",
 			success:function(data) {
 				
@@ -157,12 +142,12 @@ function makeOptionsOfRoundNumbers(data) {
 	$('#roundNumber').empty();
 	$('#roundNumber').append('<option value="" selected disabled>선택해 주세요.</option>');
 	
-	for(let i = 0 ; i < data.body.length ; i++) {
+	for(let i = 0 ; i < data.length ; i++) {
 	//for(let i = 0 ; i < 15 ; i++) {
 		if(i == 0) {
-			$( '#roundNumber' ).append( '<option selected="selected" value="' + data.body[i].roundNo + '">' + data.body[i].roundNo + '</option>' );
+			$( '#roundNumber' ).append( '<option selected="selected" value="' + data[i].roundNo + '">' + data[i].roundNo + '</option>' );
 		} else {
-			$( '#roundNumber' ).append( '<option value="' + data.body[i].roundNo + '">' + data.body[i].roundNo + '</option>' );
+			$( '#roundNumber' ).append( '<option value="' + data[i].roundNo + '">' + data[i].roundNo + '</option>' );
 		}
 	}
 }
@@ -219,7 +204,7 @@ function buyingLottoTicket() {
 			//console.log(data);
 			
 			if(data.body !== null) {
-				initializeDynamicTable(data.body, "B");
+				initializeDynamicTable(data, "B");
 			} else {
 				console.log("data is null");
 			}

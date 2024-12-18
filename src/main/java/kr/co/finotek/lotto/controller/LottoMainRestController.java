@@ -3,14 +3,14 @@ package kr.co.finotek.lotto.controller;
 import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import kr.co.finotek.core.api.DrsResponseEntity;
-import kr.co.finotek.core.service.ResponseService;
 import kr.co.finotek.lotto.dto.LottoNumberDto;
 import kr.co.finotek.lotto.service.LottoMainService;
 import lombok.RequiredArgsConstructor;
@@ -20,35 +20,37 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/lotto")
 public class LottoMainRestController {
 	
-	private final ResponseService responseService;
 	private final LottoMainService lottoMainService;
 	
 	@PostMapping("/selectLottoRoundNumber")
-	public DrsResponseEntity<Object> selectLottoRoundNumber(@RequestBody LottoNumberDto lottoNumberDto) {
+	public ResponseEntity<Object> selectLottoRoundNumber(@RequestBody LottoNumberDto lottoNumberDto) {
 		
 		lottoMainService.initProcesses();
 		
 		List<LottoNumberDto> result = lottoMainService.selectLottoRoundNumber(lottoNumberDto);
 		
-		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+//		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 	
 	@PostMapping("/buyingLottoTicket/{cost}")
-	public DrsResponseEntity<Object> buyingLottoTicket(@PathVariable int cost) {
+	public ResponseEntity<Object> buyingLottoTicket(@PathVariable int cost) {
 		
 		List<LottoNumberDto> result;
 
 		result = lottoMainService.choice(cost);
 		
 		if(ObjectUtils.isNotEmpty(result)) {
-			return responseService.toResponseEntity("구매가 완료되었습니다.", result);
+//			return responseService.toResponseEntity("구매가 완료되었습니다.", result);
+			return ResponseEntity.status(HttpStatus.OK).body(result);
 		} else {
-			return responseService.toResponseEntity("구매를 실패하였습니다.", result);
+//			return responseService.toResponseEntity("구매를 실패하였습니다.", result);
+			return ResponseEntity.status(HttpStatus.OK).body(result);
 		}
 	}
 	
 	@PostMapping("/selectLottoNumber")
-	public DrsResponseEntity<Object> selectLottoNumber(@RequestBody LottoNumberDto lottoNumberDto) {
+	public ResponseEntity<Object> selectLottoNumber(@RequestBody LottoNumberDto lottoNumberDto) {
 		
 		System.out.println(lottoNumberDto.getRoundNo());
 		
@@ -59,11 +61,12 @@ public class LottoMainRestController {
 			System.out.println("데이터가 없습니다.");
 		}
 		
-		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+//		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 	
 	@PostMapping("/testLottoNumber")
-	public DrsResponseEntity<Object> testLottoNumber(@RequestBody LottoNumberDto lottoNumberDto) {
+	public ResponseEntity<Object> testLottoNumber() {
 		
 		List<Integer> result;
 		
@@ -73,17 +76,19 @@ public class LottoMainRestController {
 			System.out.println("데이터가 없습니다.");
 		}
 		
-		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+//		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 	
 	@PostMapping("/insertLottoNumber")
-	public DrsResponseEntity<Object> insertLottoNumbers(@RequestBody LottoNumberDto lottoNumberDto) {
+	public ResponseEntity<Object> insertLottoNumbers(@RequestBody LottoNumberDto lottoNumberDto) {
 		
 		System.out.println("winnginLottoNumbers :: " + lottoNumberDto);
 		
 		boolean result = lottoMainService.insertLottoNumber(lottoNumberDto);
 		
-		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+//		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 	
 //	@PostMapping("/insertLottoNumbers")

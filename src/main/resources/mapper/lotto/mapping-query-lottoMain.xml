@@ -12,7 +12,7 @@
 			, a.fourth_num 
 			, a.fifth_num 
 			, a.sixth_num 
-		from 	winning_lotto_numbers a
+		from 	lotto_numbers a
 		<!--  
 		order by a.draw_date desc
 		 -->
@@ -30,7 +30,7 @@
 			, a.sixth_num 
 			, a.bonus_num  
 			, a.draw_date
-		from 	winning_lotto_numbers a
+		from 	lotto_numbers a
 		<choose>
         	<when test='roundNo != null and roundNo != "" '>
         		where	a.round_no = #{roundNo}
@@ -54,7 +54,7 @@
 			, a.sixth_num 
 			, a.bonus_num  
 			, a.draw_date
-		from 	winning_lotto_numbers a 
+		from 	lotto_numbers a 
 		where	a.round_no = #{roundNo}
 		order by a.round_no
 </select>
@@ -63,7 +63,7 @@
 	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
 	resultType="Integer">
 		select	count(*) 
-		from 	winning_lotto_numbers a 
+		from 	lotto_numbers a 
 		where	a.first_num = #{firstNum}
 			and a.second_num = #{secondNum}
 			and a.third_num = #{thirdNum}
@@ -76,7 +76,7 @@
 	parameterType="kr.co.finotek.lotto.dto.LottoMainDto"
 	resultType="Integer">
 		select	count(*) 
-		from 	winning_lotto_numbers a 
+		from 	lotto_numbers a 
 		where	a.first_num = #{round}
 			or a.second_num = #{round}
 			or a.third_num = #{round}
@@ -89,14 +89,14 @@
 	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
 	resultType="Integer">
 		select	count(*)
-		from 	winning_lotto_numbers a
+		from 	lotto_numbers a
 </select>
 
 <select id="selectLottoRoundNumber"
 	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
 	resultType="kr.co.finotek.lotto.dto.LottoNumberDto">
 		select	a.round_no 
-		from 	winning_lotto_numbers a
+		from 	lotto_numbers a
 		order by draw_date desc
 		<!-- 
 		limit #{pageSize}
@@ -106,7 +106,7 @@
 
 <insert id="insertLottoNumber"
 	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto">
-		insert into winning_lotto_numbers
+		insert into lotto_numbers
 			(
 				round_no,
 				first_num,

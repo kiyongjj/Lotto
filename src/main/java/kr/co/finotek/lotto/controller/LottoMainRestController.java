@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import kr.co.finotek.lotto.dto.LottoMainDto;
 import kr.co.finotek.lotto.dto.LottoNumberDto;
 import kr.co.finotek.lotto.service.LottoMainService;
 import lombok.RequiredArgsConstructor;
@@ -23,22 +24,19 @@ public class LottoMainRestController {
 	private final LottoMainService lottoMainService;
 	
 	@PostMapping("/selectLottoRoundNumber")
-	public ResponseEntity<Object> selectLottoRoundNumber(@RequestBody LottoNumberDto lottoNumberDto) {
+	public ResponseEntity<List<String>> selectLottoRoundNumber() {
 		
 		lottoMainService.initProcesses();
 		
-		List<LottoNumberDto> result = lottoMainService.selectLottoRoundNumber(lottoNumberDto);
-		
-//		return responseService.toResponseEntity("조회가 완료되었습니다.", result);
+		List<String> result = lottoMainService.selectLottoRoundNumber();
+
 		return ResponseEntity.status(HttpStatus.OK).body(result);
 	}
 	
 	@PostMapping("/buyingLottoTicket/{cost}")
-	public ResponseEntity<Object> buyingLottoTicket(@PathVariable int cost) {
+	public ResponseEntity<List<LottoMainDto>> buyingLottoTicket(@PathVariable int cost) {
 		
-		List<LottoNumberDto> result;
-
-		result = lottoMainService.choice(cost);
+		List<LottoMainDto> result = lottoMainService.choice(cost);
 		
 		if(ObjectUtils.isNotEmpty(result)) {
 //			return responseService.toResponseEntity("구매가 완료되었습니다.", result);
@@ -50,7 +48,7 @@ public class LottoMainRestController {
 	}
 	
 	@PostMapping("/selectLottoNumber")
-	public ResponseEntity<Object> selectLottoNumber(@RequestBody LottoNumberDto lottoNumberDto) {
+	public ResponseEntity<List<LottoNumberDto>> selectLottoNumber(@RequestBody LottoNumberDto lottoNumberDto) {
 		
 		System.out.println(lottoNumberDto.getRoundNo());
 		
@@ -66,7 +64,7 @@ public class LottoMainRestController {
 	}
 	
 	@PostMapping("/testLottoNumber")
-	public ResponseEntity<Object> testLottoNumber() {
+	public ResponseEntity<List<Integer>> testLottoNumber() {
 		
 		List<Integer> result;
 		

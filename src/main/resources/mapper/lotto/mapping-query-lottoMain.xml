@@ -94,14 +94,10 @@
 
 <select id="selectLottoRoundNumber"
 	parameterType="kr.co.finotek.lotto.dto.LottoNumberDto"
-	resultType="kr.co.finotek.lotto.dto.LottoNumberDto">
+	resultType="String">
 		select	a.round_no 
 		from 	lotto_numbers a
 		order by draw_date desc
-		<!-- 
-		limit #{pageSize}
-		offset (#{currentPage} - 1) * #{pageSize};
-		 -->
 </select>
 
 <insert id="insertLottoNumber"

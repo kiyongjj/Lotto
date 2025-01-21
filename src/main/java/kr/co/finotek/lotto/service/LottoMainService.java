@@ -40,36 +40,18 @@ public class LottoMainService {
     	// 로또 번호 캐싱
 		cachedLottoNumbers = selectLottoAllRounds();
 		probability = getProbility(cachedLottoNumbers);
-		
-		/*
-    	List<Integer> result = new ArrayList<Integer>();
-    	List<Integer> lottoNumberCollections = new ArrayList<Integer>();
-    	
-		for(int i = 0 ; i < 10 ; i++) {
-		lottoNumberCollections = collectNumbers();
-		
-		// 재귀 함수 호출 테스트용으로 만든 코드.
-		//int num = selectRandomNumberBasedOnProbability(probability, 0, random.nextDouble());
-		
-		System.out.println("num : " + num);
-		System.out.println(lottoNumberCollections.size() + ", initProcesses lottoNumberCollections -1- : " + lottoNumberCollections);
-		result = selectNumbers(lottoNumberCollections);
-		System.out.println("result -2- : " + result.size());
-		System.out.println(lottoNumberCollections.size() + ", initProcesses lottoNumberCollections -2- : " + lottoNumberCollections);
-		}
-		*/
     }
 
-	public List<LottoNumberDto> choice(int count) {
+	public List<LottoMainDto> choice(int count) {
 
-		List<LottoNumberDto> result = new ArrayList<>();
-		
+		List<LottoMainDto> result = new ArrayList<>();
+
 		if(count > 0) {
 			for(int i = 0 ; i < count ; i++) {
 				boolean rtn = true;
 
-				LottoNumberDto lnd = new LottoNumberDto();
-				
+				LottoMainDto lnd = new LottoMainDto();
+
 				List<Integer> lottoNumberCollections = collectNumbers();
 				List<Integer> results = selectNumbers(lottoNumberCollections);
 				
@@ -80,7 +62,6 @@ public class LottoMainService {
 					System.out.println("results :: " + results + ", rtn :: " + rtn + " , count :: " + count);
 				} else {
 					lnd = convertLotto(results);
-					lnd.setRoundNo((i + 1) + "회");
 					result.add(lnd);
 				}
 				System.out.println(results);
@@ -114,9 +95,7 @@ public class LottoMainService {
 				cumulativeProbability += probability.get(lottoNumberCollections.get(j) - 1);
 				if(lottoNumberCollections.size() > 39 && rand >= cumulativeProbability) {
 					j = 0;
-				}
-				
-				if (rand < cumulativeProbability) {
+				} else {
 					result.add(lottoNumberCollections.get(j));
 					lottoNumberCollections.remove(j);
 					break;
@@ -179,9 +158,9 @@ public class LottoMainService {
 	 * @param results
 	 * @return
 	 */
-	public LottoNumberDto convertLotto(List<Integer> results) {
+	public LottoMainDto convertLotto(List<Integer> results) {
 		
-		LottoNumberDto lnd = new LottoNumberDto();
+		LottoMainDto lnd = new LottoMainDto();
 		
 		lnd.setFirstNum(results.get(0));
     	lnd.setSecondNum(results.get(1));
@@ -206,21 +185,21 @@ public class LottoMainService {
     	
     	for(int i = 0 ; i < cachedLottoNumbers.size() ; i++) {
     		
-			count[cachedLottoNumbers.get(i).getFirstNum() - 1]++;
-			count[cachedLottoNumbers.get(i).getSecondNum() - 1]++;
-			count[cachedLottoNumbers.get(i).getThirdNum() - 1]++;
-			count[cachedLottoNumbers.get(i).getFourthNum() - 1]++;
-			count[cachedLottoNumbers.get(i).getFifthNum() - 1]++;
-			count[cachedLottoNumbers.get(i).getSixthNum() - 1]++;
+    		count[cachedLottoNumbers.get(i).getFirstNum() - 1]++;
+    		count[cachedLottoNumbers.get(i).getSecondNum() - 1]++;
+    		count[cachedLottoNumbers.get(i).getThirdNum() - 1]++;
+    		count[cachedLottoNumbers.get(i).getFourthNum() - 1]++;
+    		count[cachedLottoNumbers.get(i).getFifthNum() - 1]++;
+    		count[cachedLottoNumbers.get(i).getSixthNum() - 1]++;
     	}
-    	
     	for(int j = 0 ; j < count.length ; j++) {
     		tmpProbability.add((double)count[j] / totalIterations);
     	}
+
     	return tmpProbability;
     }
 	
-	public List<Integer> testLottoNumber() {
+    public List<Integer> testLottoNumber() {
 
 		List<Integer> result = new ArrayList<>();
 		int count = 0;
@@ -250,10 +229,11 @@ public class LottoMainService {
 //        
 //    	return lottoMainMapper.existLottoNumber(lottoNumberDto) > 0;
 //    }
+	
     
-    public List<LottoNumberDto> selectLottoRoundNumber(LottoNumberDto lottoNumberDto) {
+    public List<String> selectLottoRoundNumber() {
         
-    	return lottoMainMapper.selectLottoRoundNumber(lottoNumberDto);
+    	return lottoMainMapper.selectLottoRoundNumber();
     }
 
     public List<LottoNumberDto> selectLottoNumbers() {

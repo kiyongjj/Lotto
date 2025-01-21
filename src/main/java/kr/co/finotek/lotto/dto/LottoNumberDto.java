@@ -26,8 +26,4 @@ public class LottoNumberDto extends LottoMainDto implements Serializable {
 	private int bonusNum;
 	private LocalDate drawDate;
 	
-	@Builder.Default
-	private int currentPage = 1;
-	@Builder.Default
-	private int pageSize = 10;
 }

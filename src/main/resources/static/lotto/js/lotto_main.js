@@ -7,11 +7,8 @@ $(function() {
 	localStorage.setItem("bbsContext", "http://localhost:8081");
 
 	document.getElementById('drawDate').value = new Date().toISOString().substring(0, 10);
-	let param = {};
-	param.pageSize = 15;
-	param.currentPage = 1;
-	
-	selectRoundNumbers(param);
+
+	selectRoundNumbers();
 
 	// 로또 당첨번호 DB검색
 	$('#selectLottoNumber').click(function() {
@@ -117,14 +114,12 @@ $(function() {
 });
  
 //로또 회차정보 조회 함수
-function selectRoundNumbers(param) {
-	console.log(param);
-	
+function selectRoundNumbers() {
+
 	$.ajax({
 		type:'post',
 		dataType: "json",
 		contentType: 'application/json',
-		data: JSON.stringify(param),
 		url:localStorage.getItem("bbsContext") + "/lotto/selectLottoRoundNumber",
 		success:function(data) {
 			console.log(data);
@@ -143,11 +138,12 @@ function makeOptionsOfRoundNumbers(data) {
 	$('#roundNumber').append('<option value="" selected disabled>선택해 주세요.</option>');
 	
 	for(let i = 0 ; i < data.length ; i++) {
-	//for(let i = 0 ; i < 15 ; i++) {
 		if(i == 0) {
-			$( '#roundNumber' ).append( '<option selected="selected" value="' + data[i].roundNo + '">' + data[i].roundNo + '</option>' );
+			//$( '#roundNumber' ).append( '<option selected="selected" value="' + data[i].roundNo + '">' + data[i].roundNo + '</option>' );
+			$( '#roundNumber' ).append( '<option selected="selected" value="' + data[i] + '">' + data[i] + '</option>' );
 		} else {
-			$( '#roundNumber' ).append( '<option value="' + data[i].roundNo + '">' + data[i].roundNo + '</option>' );
+			//$( '#roundNumber' ).append( '<option value="' + data[i].roundNo + '">' + data[i].roundNo + '</option>' );
+			$( '#roundNumber' ).append( '<option value="' + data[i] + '">' + data[i] + '</option>' );
 		}
 	}
 }
@@ -201,9 +197,9 @@ function buyingLottoTicket() {
 		url:localStorage.getItem("bbsContext") + "/lotto/buyingLottoTicket/" + cost,
 		success:function(data) {
 			
-			//console.log(data);
+			console.log(data);
 			
-			if(data.body !== null) {
+			if(data !== null) {
 				initializeDynamicTable(data, "B");
 			} else {
 				console.log("data is null");
@@ -246,6 +242,7 @@ function initializeDynamicTable(data, rtn) {
 	// 테이블 바디 생성
 	const tbody = table.createTBody();
 	data.forEach(item => {
+		console.log(item);
 		const row = tbody.insertRow();
 	    headers.forEach(header => {
 			const cell = row.insertCell();

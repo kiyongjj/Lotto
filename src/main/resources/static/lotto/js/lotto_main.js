@@ -220,7 +220,7 @@ function initializeDynamicTable(data, rtn) {
 	// thead 데이터 배열
 	let headers = null;
 	if(rtn == "B" || rtn == "T") {
-		headers = ["roundNo", "firstNum", "secondNum", "thirdNum", "fourthNum", "fifthNum", "sixthNum"];
+		headers = ["firstNum", "secondNum", "thirdNum", "fourthNum", "fifthNum", "sixthNum"];
 	} else {
 		headers = ["roundNo", "firstNum", "secondNum", "thirdNum", "fourthNum", "fifthNum", "sixthNum", "bonusNum", "drawDate"];
 	}

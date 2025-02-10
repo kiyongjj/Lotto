@@ -2,12 +2,12 @@ package kr.co.finotek.lotto.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,8 +41,48 @@ public class LottoMainService {
 		cachedLottoNumbers = selectLottoAllRounds();
 		probability = getProbility(cachedLottoNumbers);
     }
+    
+    public List<LottoMainDto> choice(int count) {
+    	List<LottoMainDto> result = new ArrayList<>();
+    	LottoMainDto lotto = new LottoMainDto();
+    	
+    	for(int i = 0 ; i < count ; i++) {
+    		lotto = choiceLottoNumbers();
+    		boolean rtn = result.contains(lotto);
+    		System.out.println("rtn :: " + rtn);
+        	result.add(lotto);
+    	}
 
-	public List<LottoMainDto> choice(int count) {
+    	System.out.println("result : " + result);
+    	
+    	return result;
+    }
+    
+    public LottoMainDto choiceLottoNumbers() {
+    	List<LottoMainDto> result = new ArrayList<>();
+
+    	int randomNum = generateRandomNum(1000, 10000);
+    	System.out.println("randomNum -1- : " + randomNum);
+    	boolean rtn = true;
+    	
+    	for(int i = 0 ; i < randomNum ; i++) {
+	    	List<Integer> lottoNumberCollections = collectNumbers();
+	    	List<Integer> results = selectNumbers(lottoNumberCollections);
+			rtn = checkLottoNumber(results);
+			if(rtn) {
+				System.out.println("result :: " + results + ", rtn :: "
+						+ rtn + ", count :: " + i);
+				i--;
+			} else {
+				result.add(convertLotto(results));
+			}
+    	}
+    	randomNum = generateRandomNum(1000, randomNum);
+    	
+    	return result.get(randomNum);
+    }
+    
+	public List<LottoMainDto> choiceOld(int count) {
 
 		List<LottoMainDto> result = new ArrayList<>();
 
@@ -64,9 +104,10 @@ public class LottoMainService {
 					lnd = convertLotto(results);
 					result.add(lnd);
 				}
-				System.out.println(results);
+				System.out.println(i + " : " + results);
 			}
 		}
+		System.out.println("result : " + result);
     	return result;
 	}
 	
@@ -80,14 +121,13 @@ public class LottoMainService {
 	public List<Integer> selectNumbers(List<Integer> lottoNumberCollections) {
 		
 		List<Integer> result = new ArrayList<Integer>();
+		SecureRandom secureRandom = new SecureRandom();
 
-		Random random = new Random();
-		
 		for(int i = 0 ; i < LOTTO_NUMBER_COUNT ; i++) {
 			
 			Collections.shuffle(lottoNumberCollections);
 
-			double rand = random.nextDouble(); // 0부터 1 사이의 랜덤한 double 값 생성
+			double rand = secureRandom.nextDouble();
 			double cumulativeProbability = 0.0;
 			
 			
@@ -171,7 +211,7 @@ public class LottoMainService {
     	
     	return lnd;
 	}
-
+	
 	/**
 	 * Lotto 당첨번호 누적 확률 계산
 	 * @param cachedLottoNumbers
@@ -219,18 +259,18 @@ public class LottoMainService {
 		
 		return result;
 	}
+    
+    public int generateRandomNum(int start, int end) {
+		SecureRandom secureRandom = new SecureRandom();
+
+		return secureRandom.nextInt(start, end);
+	}
 	
 	/**
 	 * Mapper 호출
 	 * @param lottoNumberDto
 	 * @return
 	 */
-//    public boolean checkLottoNumber(LottoNumberDto lottoNumberDto) {
-//        
-//    	return lottoMainMapper.existLottoNumber(lottoNumberDto) > 0;
-//    }
-	
-    
     public List<String> selectLottoRoundNumber() {
         
     	return lottoMainMapper.selectLottoRoundNumber();
@@ -275,7 +315,13 @@ public class LottoMainService {
 
     
 
-    
+
+//  public boolean checkLottoNumber(LottoNumberDto lottoNumberDto) {
+//      
+//  	return lottoMainMapper.existLottoNumber(lottoNumberDto) > 0;
+//  }
+	
+  
 
     
 	public int countOfLottoRound() {

@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-@Table(name="lotto_temp")
+@Table(name="lotto_numbers")
 public class Lotto {
 
 	@Id
 	@GeneratedValue
 	@Column(name = "ROUND_NO", nullable = false)
-	private Long roundNo;
+	private String roundNo;
 	
 	@Column
 	private int firstNum;
@@ -41,9 +41,16 @@ public class Lotto {
 	@Column
 	private int sixthNum;
 	
+	@Column
+	private int bonusNum;
+	
+	@Column
+	private LocalDate drawDate;
+	
 	@Builder
-	public Lotto(Long roundNo, int firstNum, int secondNum,
-			int thirdNum, int fourthNum, int fifthNum, int sixthNum) {
+	public Lotto(String roundNo, int firstNum, int secondNum,
+			int thirdNum, int fourthNum, int fifthNum, int sixthNum,
+			int bonusNum, LocalDate drawDate) {
 		this.roundNo = roundNo;
 		this.firstNum = firstNum;
 		this.secondNum = secondNum;
@@ -51,5 +58,7 @@ public class Lotto {
 		this.fourthNum = fourthNum;
 		this.fifthNum = fifthNum;
 		this.sixthNum = sixthNum;
+		this.bonusNum = bonusNum;
+		this.drawDate = drawDate;
 	}
 }

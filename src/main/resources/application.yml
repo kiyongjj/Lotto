@@ -1,14 +1,3 @@
-#daekyo: 
-#  bizName: CMM
-#  session:
-#    enabled: true
-#    exclude:
-#      server: drs-billing-admin,drs-api,drs-cms
-#      referer: /swagger-ui/
-#      path: /health/alive,/cmm/v1/sys/msg/update/redis/msg/,/push/v1/device/check/receive,/push/v1/message/,/fil/download/external
-#  tscan-url: https://drs-gateway.daekyo.co.kr:8080/cmm/v1/tscan/insert
-#  file-url: https://drs-gateway.daekyo.co.kr:8080/fil/
-  
 server:
   port: 8081
 
@@ -30,10 +19,6 @@ spring:
 #    username: urero1k
 #    password: finotek000
   application.name: lotto
-#  redis:
-#    #url: redis://192.168.10.117:6379
-#    host: localhost
-#    port: 6379
   mvc:
     view:
       prefix: /WEB-INF/jsp/

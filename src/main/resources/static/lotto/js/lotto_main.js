@@ -39,15 +39,16 @@ $(function() {
 	
 	$('#testLottoNumber').click(function() {
 
-		let param = {};
-		const roundNo = document.getElementById('roundNumber');
-		param.roundNo = roundNo.options[roundNo.selectedIndex].value;
+		//let param = {};
+		//const param = document.getElementById('roundNumber');
+		const roundNo = "1158회";
+		//param.roundNo = roundNo.options[roundNo.selectedIndex].value;
 		
 		$.ajax({
 			type:'post',
 			dataType: "json",
 			contentType: 'application/json',
-			//data: JSON.stringify(param),
+			data: JSON.stringify(roundNo),
 			url:localStorage.getItem("bbsContext") + "/lotto/testLottoNumber",
 			success:function(data) {
 				

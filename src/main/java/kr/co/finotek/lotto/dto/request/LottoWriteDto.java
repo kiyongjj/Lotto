@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LottoWriteDto {
 
-	private Long roundNo;
+	private String roundNo;
 	private int firstNum;
 	private int secondNum;
 	private int thirdNum;
@@ -19,7 +19,7 @@ public class LottoWriteDto {
 	private int fifthNum;
 	private int sixthNum;
 	
-	public LottoWriteDto(Long roundNo, int firstNum, int secondNum,
+	public LottoWriteDto(String roundNo, int firstNum, int secondNum,
 			int thirdNum, int fourthNum, int fifthNum, int sixthNum) {
 		this.roundNo = roundNo;
 		this.firstNum = firstNum;
